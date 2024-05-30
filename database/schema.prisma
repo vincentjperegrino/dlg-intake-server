@@ -1,0 +1,145 @@
+datasource db {
+  provider = "mysql"
+  url = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Privilege {
+  user
+  customer
+  admin
+  representative
+}
+
+enum Language {
+  english
+  spanish
+  vietnamese
+}
+
+enum PhoneUsage {
+  call
+  text
+}
+
+enum CivilStatus {
+  single
+  married
+}
+
+enum Gender {
+  male
+  female
+}
+
+enum SsnStatus {
+  noSsn
+  pending
+  needToGet
+}
+
+enum CaseStatus {
+  pending
+  processing
+  submitted
+}
+
+model Users {
+  id Int @id @default(autoincrement())
+  firstName String
+  middleName String?
+  lastName String
+  privilege Privilege @default(customer)
+  isActive Boolean @default(true)
+  isVerified Boolean @default(true)
+  email String @unique
+  password String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  userInformation UserInformation?
+  address Addresses?
+  alternateContact AlternateContacts?
+  languages Languages[]
+  cases Cases[]
+  passwordRecovery PasswordRecovery[]
+}
+
+model UserInformation {
+  id Int @id @default(autoincrement())
+  civilStatus CivilStatus
+  gender Gender
+  birthDate DateTime
+  ssn String
+  itin String
+  phoneNumber String
+  usage PhoneUsage @default(call)
+  ssnStatus SsnStatus?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  userId Int @unique
+  user Users @relation(fields: [userId], references: [id])
+}
+
+model AlternateContacts {
+  id Int @id @default(autoincrement())
+  relationshipToClient String
+  phoneNumber String
+  minorParentsName String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  userId Int @unique
+  user Users @relation(fields: [userId], references: [id])
+}
+
+model Addresses {
+  id Int @id @default(autoincrement())
+  addressLine1 String
+  addressLine2 String?
+  addressState String
+  addressZip String
+  addressCountry String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  userId Int @unique
+  user Users @relation(fields: [userId], references: [id])
+}
+
+model Languages {
+  id Int @id @default(autoincrement())
+  language Language
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  userId Int
+  user Users @relation(fields: [userId], references: [id])
+}
+
+model Cases {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  userId Int
+  user Users @relation(fields: [userId], references: [id])
+  generalCaseInformation GeneralCaseInformation?
+}
+
+model GeneralCaseInformation {
+  id Int @id @default(autoincrement())
+  minorParentsName String?
+  hasPassenger Boolean
+  passengerCount Int
+  seatingPosition String
+  caseId Int @unique
+  case Cases @relation(fields: [caseId], references: [id])
+  // for existing client for other incidents, count cases of user. if > 0, true
+}
+
+model PasswordRecovery {
+  id Int @id @default(autoincrement())
+  userId Int
+  resetPasswordToken String
+  resetPasswordExpires DateTime
+  user Users @relation(fields: [userId], references: [id])
+}

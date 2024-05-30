@@ -1,0 +1,33 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ${DOCKERFILE}
+    container_name: dlg_intake_api
+    ports:
+      - "50000:3000"
+    depends_on:
+      - dlg_mysql
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+    networks:
+      - dlg_net
+  dlg_mysql:
+    image: mysql:5.7
+    container_name: dlg_intake_mysql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: true
+    ports:
+      - "50001:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - dlg_net
+
+networks:
+  dlg_net:
+    driver: bridge
+
+volumes:
+  mysql_data:

@@ -1,0 +1,42 @@
+{
+  "name": "dlg-intake-form-api",
+  "version": "0.1.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:development": "set NODE_ENV=development && npm install",
+    "build:staging": "set NODE_ENV=staging && npm install",
+    "build:production": "set NODE_ENV=production && npm install && npm prune",
+    "dev": "nodemon .",
+    "prisma:generate": "npx prisma generate --schema=./database/schema.prisma",
+    "prisma:dev:initialize": "npm run prisma:generate && npm run prisma:dev:migrate",
+    "prisma:dev:migrate": "npx prisma migrate dev --schema=./database/schema.prisma && npx prisma db seed",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "^5.3.1",
+    "ajv": "^8.12.0",
+    "ajv-formats": "^2.1.1",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "glob": "^10.3.6",
+    "helmet": "^7.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mysql": "^2.18.1",
+    "nodemailer": "^6.9.13",
+    "prisma": "^5.3.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.1"
+  },
+  "prisma": {
+    "seed": "node database/seed.js"
+  }
+}

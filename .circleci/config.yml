@@ -1,0 +1,13 @@
+version: 2.1
+orbs:
+  node: circleci/node@5.1.0
+  aws-cli: circleci/aws-cli@3.1
+  aws-code-deploy: circleci/aws-code-deploy@3.0.0
+workflows:
+  build:
+    jobs:
+      - node/run:
+          app-dir: ~/dlg-intake-form
+          npm-run: build
+          pkg-manager: npm
+          name: Build application and prune
